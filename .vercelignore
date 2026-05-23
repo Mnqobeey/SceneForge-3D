@@ -1,0 +1,16 @@
+.git
+.vercel
+.sixth
+node_modules
+dist
+docs
+tmp
+.logs
+
+.env
+.env.*
+*.local
+*.log
+*.bak
+*.backup*
+*.tmp
