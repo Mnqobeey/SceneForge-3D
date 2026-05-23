@@ -1,0 +1,298 @@
+[
+  {
+    "id": "fire_extinguisher",
+    "label": "Fire Extinguisher",
+    "file": "fire_extinguisher.glb",
+    "category": "Safety",
+    "keywords": ["fire extinguisher", "extinguisher", "safety", "emergency", "workplace", "fire"],
+    "description": "A fire extinguisher is used to control small fires in emergency situations. It should be easy to access and inspected regularly."
+  },
+  {
+    "id": "helmet",
+    "label": "Safety Helmet",
+    "file": "helmet.glb",
+    "category": "Safety",
+    "keywords": ["helmet", "hard hat", "ppe", "construction", "head protection", "safety"],
+    "description": "A safety helmet helps reduce head-injury risk on construction and industrial sites. It should be checked for cracks before use."
+  },
+  {
+    "id": "lamp",
+    "label": "Lamp",
+    "file": "lamp.glb",
+    "category": "General",
+    "keywords": ["lamp", "light", "lighting", "visibility", "desk lamp"],
+    "description": "A lamp improves visibility in a work or learning area. Good lighting helps learners inspect details and identify hazards."
+  },
+  {
+    "id": "duck",
+    "label": "Duck",
+    "file": "duck.glb",
+    "category": "Demo",
+    "keywords": ["duck", "animal", "toy", "demo object"],
+    "description": "This duck model is a simple demonstration object for practicing 3D inspection, rotation, and object identification."
+  },
+  {
+    "id": "box",
+    "label": "Box",
+    "file": "box.glb",
+    "category": "General",
+    "keywords": ["box", "cube", "block", "container", "package", "storage"],
+    "description": "A box can represent a container, package, or placeholder object in a training simulation. It is useful for practicing spatial awareness."
+  },
+  {
+    "id": "traffic_cone",
+    "label": "Traffic Cone",
+    "file": "traffic_cone.glb",
+    "category": "Safety",
+    "keywords": ["traffic cone", "construction cone", "road safety", "warning", "hazard", "construction", "safety"],
+    "description": "A traffic cone is used to warn people about hazards, guide movement, and mark restricted or unsafe areas.",
+    "source": {
+      "name": "Kenney City Kit (Roads)",
+      "url": "https://www.kenney.nl/assets/city-kit-roads",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Kenney; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "construction_barrier",
+    "label": "Construction Barrier",
+    "file": "construction_barrier.glb",
+    "category": "Safety",
+    "keywords": ["construction barrier", "road barrier", "safety barrier", "work zone", "restricted area", "hazard", "construction", "safety"],
+    "description": "A construction barrier separates people from hazards and helps define safe movement paths around work zones.",
+    "source": {
+      "name": "Kenney City Kit (Roads)",
+      "url": "https://www.kenney.nl/assets/city-kit-roads",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Kenney; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "warning_sign",
+    "label": "Warning Sign",
+    "file": "warning_sign.glb",
+    "category": "Safety",
+    "keywords": ["warning sign", "warning", "caution", "hazard sign", "traffic warning", "safety sign", "alert"],
+    "description": "A warning sign communicates hazards or caution areas so learners can identify risks before entering a space.",
+    "source": {
+      "name": "Kenney Factory Kit",
+      "url": "https://www.kenney.nl/assets/factory-kit",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Kenney; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "control_lever",
+    "label": "Control Lever",
+    "file": "control_lever.glb",
+    "category": "Industrial",
+    "keywords": ["control lever", "lever", "machine control", "switch", "industrial control", "equipment control", "factory"],
+    "description": "A control lever is used to operate or isolate machinery. In training, it supports equipment-control and lockout awareness scenarios.",
+    "source": {
+      "name": "Kenney Factory Kit",
+      "url": "https://www.kenney.nl/assets/factory-kit",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Kenney; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "laptop",
+    "label": "Laptop",
+    "file": "laptop.glb",
+    "category": "Technology",
+    "keywords": ["laptop", "computer", "portable computer", "notebook", "workstation", "technology", "device"],
+    "description": "A laptop is a portable computer used for digital learning, remote work, documentation, and technical training activities.",
+    "source": {
+      "name": "Kenney Furniture Kit",
+      "url": "https://www.kenney.nl/assets/furniture-kit",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Kenney; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "monitor",
+    "label": "Monitor",
+    "file": "monitor.glb",
+    "category": "Technology",
+    "keywords": ["monitor", "computer monitor", "screen", "display", "workstation", "technology", "device"],
+    "description": "A monitor displays information from a computer or training system and helps learners inspect visual instructions or dashboards.",
+    "source": {
+      "name": "Kenney Furniture Kit",
+      "url": "https://www.kenney.nl/assets/furniture-kit",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Kenney; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "keyboard",
+    "label": "Keyboard",
+    "file": "keyboard.glb",
+    "category": "Technology",
+    "keywords": ["keyboard", "computer keyboard", "input device", "typing", "workstation", "technology", "device"],
+    "description": "A keyboard is an input device used to enter text and commands into computers, control panels, and learning systems.",
+    "source": {
+      "name": "Kenney Furniture Kit",
+      "url": "https://www.kenney.nl/assets/furniture-kit",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Kenney; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "computer_mouse",
+    "label": "Computer Mouse",
+    "file": "computer_mouse.glb",
+    "category": "Technology",
+    "keywords": ["computer mouse", "mouse", "input device", "cursor control", "workstation", "technology", "device"],
+    "description": "A computer mouse is an input device used to point, select, and interact with digital learning interfaces.",
+    "source": {
+      "name": "Kenney Furniture Kit",
+      "url": "https://www.kenney.nl/assets/furniture-kit",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Kenney; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "office_chair",
+    "label": "Office Chair",
+    "file": "office_chair.glb",
+    "category": "General",
+    "keywords": ["office chair", "desk chair", "chair", "ergonomics", "workstation", "seating", "office"],
+    "description": "An office chair supports seated work and can be used in ergonomics, workstation layout, and classroom simulation scenarios.",
+    "source": {
+      "name": "Kenney Furniture Kit",
+      "url": "https://www.kenney.nl/assets/furniture-kit",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Kenney; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "sofa_03",
+    "label": "Vintage Leather Sofa",
+    "file": "sofa_03.glb",
+    "category": "Furniture",
+    "keywords": [
+      "sofa",
+      "couch",
+      "lounge",
+      "lounge chair",
+      "seat",
+      "seating",
+      "furniture",
+      "leather sofa",
+      "vintage sofa",
+      "victorian sofa",
+      "antique sofa"
+    ],
+    "description": "A vintage leather sofa is seating furniture used in lounge, office, or classroom scenarios. It supports layout planning, ergonomic discussion, and object-identification practice.",
+    "source": {
+      "name": "Poly Haven Sofa 03",
+      "url": "https://polyhaven.com/a/sofa_03",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "boombox",
+    "label": "Vintage Boombox",
+    "file": "boombox.glb",
+    "category": "Electronics",
+    "keywords": [
+      "boombox",
+      "radio",
+      "stereo",
+      "speaker",
+      "speakers",
+      "music player",
+      "cassette player",
+      "sound system",
+      "portable speaker",
+      "80s radio"
+    ],
+    "description": "A vintage boombox is a portable audio device used for music playback. In training scenes, it can represent electronics, sound equipment, or retro technology.",
+    "source": {
+      "name": "Poly Haven Boombox",
+      "url": "https://polyhaven.com/a/boombox",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "drill_01",
+    "label": "Cordless Drill",
+    "file": "drill_01.glb",
+    "category": "Tools",
+    "keywords": [
+      "drill",
+      "power drill",
+      "cordless drill",
+      "electric drill",
+      "tool",
+      "power tool",
+      "workshop tool",
+      "construction tool"
+    ],
+    "description": "A cordless drill is a portable power tool used for drilling holes and driving fasteners. It supports tool-identification and workshop safety scenarios.",
+    "source": {
+      "name": "Poly Haven Drill 01",
+      "url": "https://polyhaven.com/a/Drill_01",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "trowel_01",
+    "label": "Garden Trowel",
+    "file": "trowel_01.glb",
+    "category": "Tools",
+    "keywords": [
+      "trowel",
+      "garden trowel",
+      "gardening tool",
+      "hand tool",
+      "digging tool",
+      "small spade",
+      "garden spade",
+      "landscaping tool"
+    ],
+    "description": "A garden trowel is a small hand tool used for digging, planting, and landscaping work. It supports outdoor-work and tool-handling training scenarios.",
+    "source": {
+      "name": "Poly Haven Trowel 01",
+      "url": "https://polyhaven.com/a/trowel_01",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "television_01",
+    "label": "Vintage Television",
+    "file": "television_01.glb",
+    "category": "Electronics",
+    "keywords": [
+      "television",
+      "tv",
+      "vintage tv",
+      "crt tv",
+      "old television",
+      "retro tv",
+      "screen",
+      "display",
+      "video",
+      "old tv"
+    ],
+    "description": "A vintage television is a CRT-style display device used for retro electronics and media scenes. It can represent screens, displays, and older classroom technology.",
+    "source": {
+      "name": "Poly Haven Television 01",
+      "url": "https://polyhaven.com/a/Television_01",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "sphere",
+    "label": "Sphere",
+    "file": "sphere.glb",
+    "category": "Fallback",
+    "keywords": ["sphere", "ball", "orb", "round", "placeholder", "fallback"],
+    "description": "A sphere is a simple generic object used as a placeholder or marker in 3D learning scenes."
+  }
+]

@@ -1,0 +1,1010 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>SceneForge 3D</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- MODE CLASS (runs BEFORE CSS so there is no flash/glitch) -->
+    <script>
+      (function () {
+        const requestedMode = (new URLSearchParams(location.search).get("mode") || "landing").trim().toLowerCase();
+        const mode =
+          requestedMode === "asset" || requestedMode === "avatar" || requestedMode === "test"
+            ? requestedMode
+            : "landing";
+        const root = document.documentElement;
+        root.classList.remove("mode-landing", "mode-asset", "mode-avatar", "mode-test");
+        root.classList.add("mode-" + mode);
+      })();
+    </script>
+
+    <style>
+      :root{
+        --bg:#0b0f1a;
+
+        /* premium panel */
+        --panel:rgba(12,16,28,0.82);
+        --panel2:rgba(255,255,255,0.06);
+
+        --border:rgba(255,255,255,0.12);
+        --border2:rgba(255,255,255,0.18);
+
+        --text:rgba(255,255,255,0.96);
+        --muted:rgba(255,255,255,0.74);
+        --muted2:rgba(255,255,255,0.60);
+
+        --accent:#3b82f6;
+        --accent2:rgba(59,130,246,0.18);
+
+        --shadow:0 22px 60px rgba(0,0,0,0.60);
+        --radius:16px;
+      }
+
+      html,body{
+        height:100%;
+        margin:0;
+        background:var(--bg);
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        color:var(--text);
+        overflow:hidden;
+      }
+
+      #app{ position:fixed; inset:0; overflow:hidden; }
+
+      /* ------------------------- MODE VISIBILITY RULES ------------------------- */
+      /* Landing shows ONLY landing */
+      html.mode-landing #ui,
+      html.mode-landing #toast,
+      html.mode-landing #nxAvatarPanel { display:none !important; }
+      html.mode-landing #nxLanding { display:block; }
+
+      /* Avatar shows ONLY avatar panel + 3D canvas */
+      html.mode-avatar #ui,
+      html.mode-avatar #toast { display:none !important; }
+      html.mode-avatar #nxLanding { display:none !important; }
+
+      /* Asset shows ONLY prototype 1 UI + 3D canvas */
+      html.mode-asset #nxLanding { display:none !important; }
+      html.mode-asset #nxAvatarPanel { display:none !important; }
+
+      /* Test console shows only its own lightweight QA UI */
+      html.mode-test,
+      html.mode-test body {
+        min-height:100%;
+        overflow:auto;
+      }
+      html.mode-test #ui,
+      html.mode-test #toast,
+      html.mode-test #nxAvatarPanel,
+      html.mode-test #nxLanding {
+        display:none !important;
+      }
+      html.mode-test #app {
+        position:static;
+        min-height:100vh;
+        overflow:auto;
+      }
+      /* ---------------------------------------------------------------------- */
+
+      /* Panel (Prop Studio UI) */
+      #ui{
+        position:fixed;
+        top:18px; left:18px;
+        width:min(500px, calc(100vw - 36px));
+        background:var(--panel);
+        border:1px solid rgba(255,255,255,0.10);
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        padding:14px;
+        z-index:10;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+      }
+
+      /* Three canvas must sit behind UI */
+      #app { pointer-events: auto; }
+
+
+
+      /* UI panels must be above the canvas */
+      #ui, #nxAvatarPanel {
+        position: fixed;
+        z-index: 999;
+        pointer-events: auto;
+      }
+
+      #app, #nxLanding3D { position: fixed; inset: 0; z-index: 0; }
+      #app canvas, #nxLanding3D canvas { position: fixed; inset: 0; z-index: 0; }
+
+      /* Just to be safe: canvas stays behind */
+      #app canvas {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 0 !important;
+      }
+
+
+      /* Header */
+      #headerRow{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:13px;
+      }
+
+      #title{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        font-weight:900;
+        font-size:14px;
+        letter-spacing:0.2px;
+      }
+
+      .titleSub{
+        font-weight:750;
+        opacity:0.92;
+      }
+
+      /* badge */
+      #badge{
+        font-size:11px;
+        padding:4px 9px;
+        border-radius:999px;
+        background:var(--accent2);
+        border:1px solid rgba(59,130,246,0.35);
+        color:rgba(220,235,255,0.98);
+        user-select:none;
+      }
+
+      /* top buttons */
+      #headerActions{
+        display:flex;
+        gap:8px;
+        align-items:center;
+      }
+
+      button{
+        padding:10px 12px;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,0.16);
+        background:rgba(255,255,255,0.10);
+        color:rgba(255,255,255,0.95);
+        font-weight:850;
+        cursor:pointer;
+        transition: transform 120ms ease, background 120ms ease, border-color 120ms ease, opacity 120ms ease;
+      }
+      button:hover{
+        transform: translateY(-1px);
+        background: rgba(255,255,255,0.14);
+        border-color: rgba(255,255,255,0.24);
+      }
+      button:active{ transform: translateY(0px); }
+      button:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+
+      button.primary{
+        background:rgba(59,130,246,0.95);
+        border-color:rgba(59,130,246,0.55);
+        color:#fff;
+      }
+      button.primary:hover{
+        background:rgba(59,130,246,0.88);
+        border-color:rgba(59,130,246,0.75);
+      }
+
+      button.secondary{
+        background:rgba(255,255,255,0.10);
+      }
+
+      /* Hint copy */
+      #hint{
+        margin-top:12px;
+        padding:10px 12px;
+        border-radius:14px;
+        border:1px solid rgba(255,255,255,0.10);
+        background:rgba(255,255,255,0.06);
+        font-size:12.5px;
+        line-height:1.5;
+        color:var(--muted);
+      }
+      #hint b{ color:#fff; }
+
+      /* Chips */
+      #chips{
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+        margin-top:12px;
+      }
+
+      .chip{
+        appearance:none;
+        border:1px solid rgba(255,255,255,0.14);
+        background:rgba(255,255,255,0.08);
+        color:rgba(255,255,255,0.92);
+        border-radius:999px;
+        padding:8px 11px;
+        font-size:11.5px;
+        cursor:pointer;
+        transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+        user-select:none;
+      }
+      .chip:hover{
+        transform: translateY(-1px);
+        background: rgba(255,255,255,0.12);
+        border-color: rgba(255,255,255,0.22);
+      }
+
+      
+
+      /* Input row */
+      #row{
+        display:flex;
+        gap:10px;
+        margin-top:14px;
+        align-items:center;
+      }
+
+      input{
+        flex:1;
+        padding:12px 12px;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,0.16);
+        background:rgba(255,255,255,0.07);
+        color:#fff;
+        outline:none;
+        font-size:13.5px;
+      }
+      input::placeholder{ color: rgba(255,255,255,0.55); }
+      input:focus{
+        border-color: rgba(59,130,246,0.75);
+        box-shadow: 0 0 0 4px rgba(59,130,246,0.18);
+      }
+
+      /* Tools */
+      #tools{
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-top:12px;
+        align-items:center;
+      }
+
+      label{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        font-size:12px;
+        padding:10px 12px;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,0.12);
+        background:rgba(255,255,255,0.06);
+        color:rgba(255,255,255,0.90);
+        user-select:none;
+      }
+      label input{ accent-color: var(--accent); }
+
+      /* Status + progress */
+      #status{
+        margin-top:12px;
+        font-size:12.5px;
+        color:var(--muted);
+        display:flex;
+        align-items:center;
+        gap:8px;
+      }
+
+      .nxSummary{
+        margin-top:10px;
+        padding:10px 12px;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,0.10);
+        background:rgba(255,255,255,0.055);
+        color:rgba(255,255,255,0.82);
+        font-size:12.5px;
+        line-height:1.4;
+        font-weight:700;
+      }
+      .nxSummary.hidden{ display:none; }
+
+      .statusDot{
+        width:10px; height:10px;
+        border-radius:999px;
+        background:rgba(34,197,94,0.95);
+        box-shadow: 0 0 0 4px rgba(34,197,94,0.14);
+        flex:0 0 auto;
+      }
+      .statusDot.busy{
+        background:rgba(59,130,246,0.95);
+        box-shadow: 0 0 0 4px rgba(59,130,246,0.16);
+      }
+      .statusDot.err{
+        background:rgba(239,68,68,0.95);
+        box-shadow: 0 0 0 4px rgba(239,68,68,0.16);
+      }
+
+      #progressWrap{
+        margin-top:10px;
+        height:10px;
+        border-radius:999px;
+        background:rgba(255,255,255,0.10);
+        border:1px solid rgba(255,255,255,0.12);
+        overflow:hidden;
+        position:relative;
+      }
+      #progressWrap.hidden{ display:none; }
+
+      #progressFill{
+        height:100%;
+        width:0%;
+        background:rgba(255,255,255,0.92);
+        border-radius:999px;
+        transition:width 140ms linear;
+      }
+
+      #progressWrap.generating::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+        transform:translateX(-100%);
+        animation:shimmer 1.05s infinite;
+      }
+      @keyframes shimmer{
+        0%{transform:translateX(-100%)}
+        100%{transform:translateX(100%)}
+      }
+
+      /* Dev JSON */
+      #json{
+        margin-top:12px;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size:12px;
+        background:rgba(255,255,255,0.06);
+        border:1px solid rgba(255,255,255,0.12);
+        border-radius:12px;
+        padding:12px;
+        max-height:220px;
+        overflow:auto;
+        white-space:pre-wrap;
+        display:none;
+        color:rgba(255,255,255,0.92);
+      }
+
+      /* Toast */
+      #toast{
+        position:fixed;
+        right:18px; bottom:18px;
+        max-width:min(460px, calc(100vw - 36px));
+        background:rgba(10,12,18,0.78);
+        border:1px solid rgba(255,255,255,0.12);
+        padding:12px 14px;
+        border-radius:14px;
+        box-shadow:0 14px 36px rgba(0,0,0,0.45);
+        opacity:0;
+        transform:translateY(8px);
+        pointer-events:none;
+        transition:opacity 160ms ease, transform 160ms ease;
+        font-size:12.5px;
+        line-height:1.35;
+        z-index:99;
+        color:rgba(255,255,255,0.92);
+      }
+      #toast.show{ opacity:1; transform:translateY(0); }
+
+      /* Responsive */
+      @media (max-width: 520px){
+        #ui{
+          top:auto;
+          bottom:18px;
+          left:18px;
+          right:18px;
+          width:auto;
+        }
+        #row{ flex-direction:column; align-items:stretch; }
+        #headerActions button{ padding:10px 10px; }
+      }
+
+      /* ------------------------- LANDING (PREMIUM) ------------------------- */
+      #nxLanding{
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: none; /* enabled by mode-landing */
+      }
+
+      #nxLanding3D{
+        position:absolute;
+        inset:0;
+        z-index:0;
+        pointer-events:none; /* keeps UI feeling responsive */
+        transform: translateZ(0); /* helps compositing on some GPUs */
+      }
+
+      /* CRITICAL: make the canvas fill (fixes "rarely shows") */
+      #nxLanding3D canvas{
+        position:absolute !important;
+        inset:0 !important;
+        width:100% !important;
+        height:100% !important;
+        display:block !important;
+      }
+
+      #nxLandingOverlay{
+        position:absolute;
+        inset:0;
+        z-index:1;
+        pointer-events:none;
+        /* slightly lighter so the 3D hero isn't suffocated */
+        background:
+          radial-gradient(1000px 600px at 35% 30%, rgba(59,130,246,0.12), transparent 65%),
+          radial-gradient(900px 600px at 75% 40%, rgba(168,85,247,0.12), transparent 65%),
+          linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.56));
+      }
+
+      /* Topbar */
+      #nxTopbar{
+        position:absolute;
+        top:16px;
+        left:50%;
+        transform: translateX(-50%);
+        width: min(1160px, calc(100vw - 36px));
+        z-index: 3;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:18px;
+        padding: 12px 16px;
+        border-radius: 18px;
+        background: rgba(8,10,18,0.72);
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: 0 18px 58px rgba(0,0,0,0.62);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+
+      /* Logo */
+      #nxLogo{
+        display:flex;
+        align-items:center;
+        gap:13px;
+        user-select:none;
+      }
+
+      #nxLogoMark{
+        position:relative;
+        width: 32px; height:32px;
+        border-radius: 10px;
+
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.95), rgba(125,211,252,0.32) 35%, rgba(59,130,246,0.32) 70%, rgba(255,255,255,0.72)),
+          #101827;
+
+        border: 1px solid rgba(255,255,255,0.34);
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.55),
+          0 14px 34px rgba(0,0,0,0.55),
+          0 0 34px rgba(96,165,250,0.25);
+        flex:0 0 auto;
+      }
+      #nxLogoMark::after{
+        content:"S";
+        position:absolute;
+        inset:0;
+        display:grid;
+        place-items:center;
+        color:rgba(255,255,255,0.96);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size:18px;
+        font-weight:900;
+        text-shadow:0 2px 12px rgba(0,0,0,0.65);
+      }
+
+
+      #nxLogoText{
+      position: relative;
+
+      /* Premium serif wordmark. */
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      line-height: 1;
+      transform: none;
+
+      /* Polished silver-blue gradient. */
+      background: linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #dbeafe 38%,
+        #93c5fd 70%,
+        #ffffff 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+
+      /* Dark-surface visibility. */
+      text-shadow:
+        0 10px 24px rgba(0,0,0,0.70),
+        0 0 28px rgba(147,197,253,0.24);
+    }
+
+      #nxNav{
+        display:flex;
+        align-items:center;
+        justify-content:flex-end;
+        gap:8px;
+        flex-wrap:wrap;
+      }
+      #nxNav a{
+        min-height:38px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:0 13px;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,0.12);
+        background:rgba(255,255,255,0.07);
+        color:rgba(255,255,255,0.88);
+        text-decoration:none;
+        font-size:12px;
+        font-weight:900;
+        transition:transform 120ms ease, background 120ms ease, border-color 120ms ease;
+      }
+      #nxNav a:hover{
+        transform:translateY(-1px);
+        background:rgba(255,255,255,0.12);
+        border-color:rgba(255,255,255,0.22);
+      }
+      #nxNav a.primary{
+        color:#fff;
+        background:rgba(59,130,246,0.88);
+        border-color:rgba(96,165,250,0.66);
+      }
+
+      /* HERO */
+      #nxHero{
+        position:absolute;
+        left:50%;
+        top: 54%;
+        transform: translate(-50%, -50%);
+        width: min(1150px, calc(100vw - 36px));
+        z-index: 3;
+        display:grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 16px;
+        align-items: center;
+      }
+
+      #nxHeroMain{
+        padding: 0;
+      }
+
+      #nxHeroTitle{
+        margin: 0;
+        font-size: 58px;
+        line-height: 1.06;
+        letter-spacing: 0;
+        font-weight: 950;
+      }
+
+      #nxHeroTitle span{
+        background: linear-gradient(90deg, rgba(220,235,255,0.98), rgba(255,255,255,0.72));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      #nxHeroDesc{
+        margin-top: 12px;
+        color: rgba(255,255,255,0.76);
+        font-size: 16px;
+        line-height: 1.55;
+        font-weight: 750;
+        max-width: 62ch;
+      }
+
+      #nxHeroPills{
+        margin-top: 12px;
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+      }
+      .nxPill{
+        padding: 9px 11px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.06);
+        color: rgba(255,255,255,0.86);
+        font-size: 12px;
+        font-weight: 850;
+        user-select:none;
+        white-space: nowrap;
+      }
+
+      #nxHeroSide{
+        display:grid;
+        gap: 12px;
+      }
+
+      .nxCard{
+        padding: 16px 16px;
+        border-radius: 16px;
+        background: rgba(10,12,18,0.58);
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: 0 18px 55px rgba(0,0,0,0.42);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+      }
+
+      .nxCardTop{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .nxCardTitle{
+        font-size: 12px;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.70);
+        font-weight: 900;
+      }
+
+      /* Premium tag badge (NOT a button) */
+    .nxCardBadge{
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      user-select: none;
+      cursor: default;
+
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.88);
+
+      box-shadow:
+        inset 0 0 0 1px rgba(0,0,0,0.18),
+        0 10px 26px rgba(0,0,0,0.38);
+    }
+
+    /* Prop Studio: green accent */
+    .nxCardBadge.p1{
+      border-color: rgba(34,197,94,0.42);
+      background: linear-gradient(180deg, rgba(34,197,94,0.14), rgba(34,197,94,0.06));
+      color: rgba(220,255,235,0.95);
+    }
+
+    /* Avatar Director: blue/purple accent */
+    .nxCardBadge.p2{
+      border-color: rgba(59,130,246,0.48);
+      background: linear-gradient(180deg, rgba(59,130,246,0.16), rgba(168,85,247,0.06));
+      color: rgba(230,240,255,0.96);
+    }
+
+    /* Internal QA: yellow accent */
+    .nxCardBadge.p3{
+      border-color: rgba(250,204,21,0.46);
+      background: linear-gradient(180deg, rgba(250,204,21,0.15), rgba(250,204,21,0.05));
+      color: rgba(255,250,220,0.96);
+    }
+
+
+      .nxCardBody{
+        color: rgba(255,255,255,0.80);
+        font-size: 13px;
+        line-height: 1.45;
+        font-weight: 750;
+      }
+
+      .nxModeLink{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        margin-top:12px;
+        min-height:40px;
+        padding:0 13px;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,0.16);
+        background:rgba(255,255,255,0.10);
+        color:rgba(255,255,255,0.95);
+        text-decoration:none;
+        font-size:12px;
+        font-weight:900;
+        transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+      }
+      .nxModeLink:hover{
+        transform: translateY(-1px);
+        background: rgba(255,255,255,0.14);
+        border-color: rgba(255,255,255,0.24);
+      }
+      .nxModeLink.primary{
+        background:rgba(59,130,246,0.92);
+        border-color:rgba(59,130,246,0.78);
+      }
+
+      #nxModeNote,
+      #nxModeNotice{
+        margin-top:12px;
+        padding:10px 12px;
+        border-radius:14px;
+        border:1px solid rgba(255,255,255,0.10);
+        background:rgba(255,255,255,0.06);
+        color:rgba(255,255,255,0.74);
+        font-size:12.5px;
+        line-height:1.45;
+        font-weight:750;
+      }
+      #nxModeNotice{
+        border-color:rgba(250,204,21,0.34);
+        background:rgba(250,204,21,0.08);
+      }
+      #nxModeNotice a{
+        color:rgba(220,235,255,0.98);
+        margin-left:8px;
+        font-weight:900;
+      }
+
+      .chipIcon{
+        opacity:0.55;
+        margin:0 4px;
+        font-weight:900;
+      }
+
+      .nxDot{
+        width:10px;
+        height:10px;
+        border-radius:999px;
+        background:rgba(34,197,94,0.95);
+        box-shadow:0 0 0 4px rgba(34,197,94,0.14);
+        display:inline-block;
+        flex:0 0 auto;
+      }
+
+      /* Prompt: collapsed pill -> expands input */
+      .nxRow { display:flex; gap:10px; align-items:center; margin-top:14px; }
+      .nxPromptPill{
+        flex: 1;
+        display:flex;
+        align-items:center;
+        gap:10px;
+        justify-content:flex-start;
+        padding:12px 12px;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,0.16);
+        background:rgba(255,255,255,0.07);
+        color:rgba(255,255,255,0.86);
+        font-weight:850;
+        cursor:text; /* feels like input */
+        text-align:left;
+      }
+      .nxPromptPill:hover{
+        background:rgba(255,255,255,0.10);
+        border-color:rgba(255,255,255,0.22);
+      }
+      .nxPromptIcon{
+        width:18px;height:18px;
+        display:inline-flex;
+        align-items:center;justify-content:center;
+        border-radius:999px;
+        background:rgba(59,130,246,0.22);
+        border:1px solid rgba(59,130,246,0.35);
+        color:rgba(220,235,255,0.98);
+        flex:0 0 auto;
+      }
+      .nxPromptBox{ display:none; flex:1; }
+      .nxPromptBox.show{ display:block; }
+
+      .nxPromptInput{
+        flex: 1;
+        width: 100%;
+        padding:12px 12px;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,0.16);
+        background:rgba(255,255,255,0.07);
+        color:#fff;
+        outline:none;
+        font-size:13.5px;
+        pointer-events: auto !important;
+        user-select: text !important;
+      }
+      
+      .nxPromptInput:focus{
+        border-color: rgba(59,130,246,0.75);
+        box-shadow: 0 0 0 4px rgba(59,130,246,0.18);
+      }
+
+
+      #nxFooterHint{
+        display:none;
+      }
+
+      @media (max-width: 900px){
+        #nxTopbar{ align-items:flex-start; flex-direction:column; }
+        #nxNav{ justify-content:flex-start; }
+        #nxHero{ grid-template-columns: 1fr; top: 58%; }
+        #nxHeroTitle{ font-size: 42px; }
+      }
+      @media (max-width: 520px){
+        #nxLogoText{ font-size: 25px; }
+        #nxFooterHint{ display:none; }
+      }
+    </style>
+  <style id="nx-clickfix">
+/* --- SceneForge Click Fix (canvas behind UI) --- */
+#app { position: fixed; inset: 0; z-index: 0; }
+#app canvas { position: fixed !important; inset: 0 !important; z-index: 0 !important; }
+/* UI panels */
+#ui, #nxAvatarPanel { position: fixed; z-index: 50; pointer-events: auto; }
+/* If you have a landing 3D host container, keep it behind UI */
+#nxLanding3D { position: fixed; inset: 0; z-index: 0; }
+</style>
+
+</head>
+
+
+
+  <body>
+    <div id="app"></div>
+
+    <!-- LANDING -->
+    <div id="nxLanding">
+      <div id="nxLanding3D"></div>
+      <div id="nxLandingOverlay"></div>
+
+      <div id="nxTopbar">
+        <div id="nxLogo">
+          <span id="nxLogoMark"></span>
+          <span id="nxLogoText" data-text="SceneForge">SceneForge</span>
+        </div>
+        <nav id="nxNav" aria-label="SceneForge modes">
+          <a class="primary" href="/?mode=asset">Prop Studio</a>
+          <a href="/?mode=avatar">Avatar Director</a>
+          <a href="/?mode=test">Match Lab</a>
+        </nav>
+      </div>
+
+      <div id="nxHero">
+        <div id="nxHeroMain">
+          <h1 id="nxHeroTitle"><span>SceneForge 3D</span></h1>
+          <div id="nxHeroDesc">
+            Prompt-led 3D learning studio for props, guided avatars, and match testing.
+          </div>
+          <div id="nxHeroPills">
+            <span class="nxPill">Curated 3D props</span>
+            <span class="nxPill">Commanded lessons</span>
+            <span class="nxPill">Deterministic matching</span>
+          </div>
+        </div>
+
+        <div id="nxHeroSide">
+          <div class="nxCard">
+            <div class="nxCardTop">
+              <div class="nxCardTitle">Prop Studio</div>
+              <div class="nxCardBadge p1">MVP</div>
+            </div>
+            <div class="nxCardBody">Turn a prompt into a matched interactive 3D prop.</div>
+          </div>
+          
+          <div class="nxCard">
+            <div class="nxCardTop">
+              <div class="nxCardTitle">Avatar Director</div>
+              <div class="nxCardBadge p2">Classroom</div>
+            </div>
+            <div class="nxCardBody">Command a presenter through a guided training room.</div>
+          </div>
+
+          <div class="nxCard">
+            <div class="nxCardTop">
+              <div class="nxCardTitle">Match Lab</div>
+              <div class="nxCardBadge p3">QA</div>
+            </div>
+            <div class="nxCardBody">Inspect prompt matching against the curated GLB library.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="ui">
+      <div id="headerRow">
+        <div id="title">
+          <span aria-hidden="true"></span>
+          SceneForge <span class="titleSub">Prop Studio</span>
+          <span id="badge" title="Prompt-to-prop studio">MVP</span>
+        </div>
+
+        <div id="headerActions">
+          <button id="nxHomeBtn" type="button" class="secondary">Home</button>
+          <button id="nxProto2Btn" type="button" class="nxBtn nxBtnPrimary">Avatar</button>
+        </div>
+      </div>
+
+      <div id="chips" aria-label="Examples">
+        <button type="button" class="chip" data-preset="fire extinguisher">Extinguisher</button>
+        <button type="button" class="chip" data-preset="blue sphere">Sphere</button>
+        <button type="button" class="chip" data-preset="duck">Duck</button>
+        <button type="button" class="chip" data-preset="lamp">Lamp</button>
+      </div>
+
+      <div id="row" role="search" class="nxRow">
+        <input
+          id="prompt"
+          class="nxPromptInput"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder='Describe an object...'
+        />
+        <button id="run" class="primary" aria-label="Load model">Load</button>
+      </div>
+
+
+
+      <div id="tools" aria-label="View tools">
+        <button id="resetView" type="button" class="secondary">Reset</button>
+        <button id="centerObj" type="button" class="secondary">Center</button>
+        <label title="Hold Shift and drag to reposition">
+          <input id="snapGrid" type="checkbox" /> Grid
+        </label>
+      </div>
+
+      <div id="status" aria-live="polite">
+        <span class="statusDot" id="statusDot"></span>
+        <span id="statusText">Ready.</span>
+      </div>
+
+      <div id="progressWrap" class="hidden" aria-hidden="true">
+        <div id="progressFill"></div>
+      </div>
+
+      <div id="nxSummary" class="nxSummary hidden" aria-live="polite"></div>
+      <div id="json">{}</div>
+    </div>
+
+    <div id="toast"></div>
+
+    <!-- ROUTING -->
+<script type="module" src="/src/entry.js"></script>
+
+    <!-- status-dot helper (unchanged behavior) -->
+    <script>
+      (function(){
+        const dot = document.getElementById("statusDot");
+        const text = document.getElementById("statusText");
+        const origSet = window.uiSetStatus;
+
+        window.uiSetStatus = function(message){
+          try{
+            if (text) text.textContent = String(message || "");
+            if (dot){
+              dot.classList.remove("busy","err");
+              const m = String(message || "").toLowerCase();
+              if (m.includes("error") || m.includes("failed")) dot.classList.add("err");
+              else if (m.includes("generat") || m.includes("loading") || m.includes("building")) dot.classList.add("busy");
+            }
+          }catch(e){}
+          if (typeof origSet === "function") return origSet.apply(this, arguments);
+        };
+      })();
+    </script>
+    <!-- SceneForge debug overlay (safe in prod; only shows when ?debug=1 or localStorage.SF_DEBUG=1) -->
+<div id="nxDebug" style="
+  position:fixed; left:12px; bottom:12px; z-index:99999;
+  width:min(720px, calc(100vw - 24px)); max-height:40vh; overflow:auto;
+  display:none;
+  background:rgba(0,0,0,0.78); color:#fff;
+  border:1px solid rgba(255,255,255,0.18); border-radius:12px;
+  padding:10px 12px;
+  font:12px/1.35 ui-monospace, Menlo, Consolas, monospace;
+  white-space:pre-wrap;
+"></div>
+
+  </body>
+</html>

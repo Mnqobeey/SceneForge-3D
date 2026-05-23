@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.vercel/
+.logs/
+.sixth/
+tmp/
+
+.env
+.env.*
+!.env.example
+
+*.local
+*.log
+*.bak
+*.backup*
+*.tmp

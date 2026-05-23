@@ -1,0 +1,93 @@
+[
+  {
+    "id": "training_desk",
+    "label": "Training Desk",
+    "file": "training_desk.glb",
+    "category": "Furniture",
+    "description": "A realistic school desk used for learner workstations in the avatar classroom environment.",
+    "source": {
+      "name": "Poly Haven - School Desk 01",
+      "url": "https://polyhaven.com/a/SchoolDesk_01",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Ethan Place / Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "training_chair",
+    "label": "Training Chair",
+    "file": "training_chair.glb",
+    "category": "Furniture",
+    "description": "A realistic school chair used for learner seating in the avatar classroom environment.",
+    "source": {
+      "name": "Poly Haven - School Chair 01",
+      "url": "https://polyhaven.com/a/SchoolChair_01",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Ethan Place / Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "presenter_desk",
+    "label": "Presenter Desk",
+    "file": "presenter_desk.glb",
+    "category": "Furniture",
+    "description": "A metal office desk used as the teacher or presenter workstation.",
+    "source": {
+      "name": "Poly Haven - Metal Office Desk",
+      "url": "https://polyhaven.com/a/metal_office_desk",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Ulan Cabanilla / Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "presentation_board",
+    "label": "Presentation Board",
+    "file": "presentation_board.glb",
+    "category": "Presentation",
+    "description": "A standing chalkboard used as a classroom presentation and instruction surface.",
+    "source": {
+      "name": "Poly Haven - Standing Chalkboard 01",
+      "url": "https://polyhaven.com/a/standing_chalkboard_01",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "ParzivalCG / Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "desk_lamp",
+    "label": "Desk Lamp",
+    "file": "desk_lamp.glb",
+    "category": "Prop",
+    "description": "A realistic arm desk lamp used as a small workstation prop.",
+    "source": {
+      "name": "Poly Haven - Desk Lamp Arm 01",
+      "url": "https://polyhaven.com/a/desk_lamp_arm_01",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Yann Kervran, Kuutti Siitonen / Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "book_stack",
+    "label": "Book Stack",
+    "file": "book_stack.glb",
+    "category": "Prop",
+    "description": "A realistic encyclopedia book set used to add classroom detail and learning context.",
+    "source": {
+      "name": "Poly Haven - Book Encyclopedia Set 01",
+      "url": "https://polyhaven.com/a/book_encyclopedia_set_01",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "John Malcolm / Poly Haven; attribution not required under CC0."
+    }
+  },
+  {
+    "id": "potted_plant",
+    "label": "Potted Plant",
+    "file": "potted_plant.glb",
+    "category": "Prop",
+    "description": "A realistic potted plant used to make the classroom environment feel more natural and occupied.",
+    "source": {
+      "name": "Poly Haven - Potted Plant 01",
+      "url": "https://polyhaven.com/a/potted_plant_01",
+      "license": "Creative Commons CC0 1.0 Universal",
+      "credit": "Rico Cilliers / Poly Haven; attribution not required under CC0."
+    }
+  }
+]
